@@ -22,5 +22,8 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-#static-images
-weather-app/src/MyComponents/load.gif
+
+.env
+.env.local
+
+
