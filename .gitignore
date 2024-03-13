@@ -23,4 +23,4 @@ yarn-debug.log*
 yarn-error.log*
 
 #static-images
-src/MyComponents/load.gif
+/src/MyComponents/load.gif
