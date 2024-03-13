@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import NewItems from "./NewItems";
+import Spinner from "./Spinner";
+import PropTypes from "prop-types";
 
 export default class News extends Component {
   articles = [];
@@ -8,42 +10,66 @@ export default class News extends Component {
     this.state = {
       articles: this.articles,
       loading: false,
-      page: 1
+      page: 1,
     };
   }
+  static defaultProps = {};
+  static propTypes = {
+    pageSize: PropTypes.number,
+    category: PropTypes.string,
+  };
 
   async componentDidMount() {
-    let url = `https://newsapi.org/v2/everything?q=tesla&from=2024-02-12&sortBy=publishedAt&apiKey=04296cd208c9442e9b9c1f1a8e02dc77&page=1&pageSize=20`;
+    let url = `https://newsapi.org/v2/top-headlines?country=us&category=${this.props.category}&apiKey=04296cd208c9442e9b9c1f1a8e02dc77&page=1&pageSize=${this.props.pageSize}`;
+    this.setState({
+      loading: true,
+    });
     let data = await fetch(url);
     let parseData = await data.json();
     this.setState({
       articles: parseData.articles,
       totalSize: parseData.totalResults,
       page: 1,
+      loading: false,
     });
   }
   prevPage = async () => {
-    let url = `https://newsapi.org/v2/everything?q=tesla&from=2024-02-12&sortBy=publishedAt&apiKey=04296cd208c9442e9b9c1f1a8e02dc77&page=${
+    let url = `https://newsapi.org/v2/top-headlines?country=us&category=${
+      this.props.category
+    }&apiKey=04296cd208c9442e9b9c1f1a8e02dc77&page=${
       this.state.page - 1
-    }&pageSize=20`;
+    }&pageSize=${this.props.pageSize}`;
+    this.setState({
+      loading: true,
+    });
     let data = await fetch(url);
     let parseData = await data.json();
     this.setState({
       articles: parseData.articles,
       page: this.state.page - 1,
+      loading: false,
     });
   };
   nextPage = async () => {
-    if (this.state.page + 1 > Math.ceil(this.state.totalSize / 20)) {
+    if (
+      this.state.page + 1 >
+      Math.ceil(this.state.totalSize / this.props.pageSize)
+    ) {
     } else {
-      let url = `https://newsapi.org/v2/everything?q=tesla&from=2024-02-12&sortBy=publishedAt&apiKey=04296cd208c9442e9b9c1f1a8e02dc77&page=${
+      let url = `https://newsapi.org/v2/top-headlines?country=us&category=${
+        this.props.category
+      }&apiKey=04296cd208c9442e9b9c1f1a8e02dc77&apiKey=04296cd208c9442e9b9c1f1a8e02dc77&page=${
         this.state.page + 1
-      }&pageSize=20`;
+      }&pageSize=${this.props.pageSize}`;
+      this.setState({
+        loading: true,
+      });
       let data = await fetch(url);
       let parseData = await data.json();
       this.setState({
         articles: parseData.articles,
         page: this.state.page + 1,
+        loading: false,
       });
     }
   };
@@ -51,6 +77,7 @@ export default class News extends Component {
     return (
       <div className="container my-4">
         <h3 style={{ position: "relative", left: "40%" }}>Today's Headlines</h3>
+        {this.state.loading && <Spinner />}
         <div className="row my-4">
           {this.state.articles.map((element) => {
             return (
@@ -76,15 +103,17 @@ export default class News extends Component {
             type="button"
             disabled={this.state.page <= 1}
             onClick={this.prevPage}
-            class="btn btn-primary"
+            className="btn btn-primary"
           >
             Previous
           </button>
           <button
             type="button"
-            disabled={((this.state.totalSize) / 20) === this.state.page}
+            disabled={
+              this.state.totalSize / this.props.pageSize < this.state.page + 1
+            }
             onClick={this.nextPage}
-            class="btn btn-primary"
+            className="btn btn-primary"
           >
             Next
           </button>
