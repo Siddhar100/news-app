@@ -4,7 +4,6 @@ import Spinner from "./Spinner";
 import PropTypes from "prop-types";
 
 export default class News extends Component {
-  
   articles = [];
   constructor() {
     super();
@@ -21,7 +20,7 @@ export default class News extends Component {
   };
 
   async componentDidMount() {
-    let url = `https://newsapi.org/v2/top-headlines?country=us&category=${this.props.category}&apiKey=${process.env.API_KEY}&page=1&pageSize=${this.props.pageSize}`;
+    let url = `https://newsapi.org/v2/top-headlines?country=us&category=${this.props.category}&apiKey=04296cd208c9442e9b9c1f1a8e02dc77&page=1&pageSize=${this.props.pageSize}`;
     this.setState({
       loading: true,
     });
@@ -59,7 +58,7 @@ export default class News extends Component {
     } else {
       let url = `https://newsapi.org/v2/top-headlines?country=us&category=${
         this.props.category
-      }&apiKey=04296cd208c9442e9b9c1f1a8e02dc77&apiKey=04296cd208c9442e9b9c1f1a8e02dc77&page=${
+      }&apiKey=04296cd208c9442e9b9c1f1a8e02dc77&page=${
         this.state.page + 1
       }&pageSize=${this.props.pageSize}`;
       this.setState({
@@ -80,7 +79,7 @@ export default class News extends Component {
         <h3 style={{ position: "relative", left: "40%" }}>Today's Headlines</h3>
         {this.state.loading && <Spinner />}
         <div className="row my-4">
-          {this.state.articles?.map((element,index) => {
+          {this.state.articles?.map((element, index) => {
             return (
               element.title &&
               element.description &&
